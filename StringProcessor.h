@@ -4,14 +4,13 @@
 #include <errno.h>
 
 char** SplitString(const char* input_string, char delimiter) {
-       int count = 0;
+    int count = 0;
     const char* string_reference = input_string;
     while (*string_reference != '\0') {
         if (*string_reference++ == delimiter) {
             count++;
         }
     }
-
     char** tokens = (char**)malloc(sizeof(char*) * (count + 2));
     int token_index = 0;
     string_reference = input_string;
