@@ -4,32 +4,32 @@
 #include <errno.h>
 
 char** SplitString(const char* input_string, char delimiter) {
-    int count = 0;
-    const char* ptr = input_string;
-    while (*ptr != '\0') {
-        if (*ptr++ == delimiter) {
+       int count = 0;
+    const char* string_reference = input_string;
+    while (*string_reference != '\0') {
+        if (*string_reference++ == delimiter) {
             count++;
         }
     }
 
     char** tokens = (char**)malloc(sizeof(char*) * (count + 2));
-    int i = 0;
-    ptr = input_string;
+    int token_index = 0;
+    string_reference = input_string;
     char* token = (char*)malloc(strlen(input_string) + 1);
-    int j = 0;
-    while (*ptr != '\0') {
-        if (*ptr == delimiter) {
-            token[j] = '\0';
-            tokens[i++] = strdup(token);
-            j = 0;
+    int tokens_index = 0;
+    while (*string_reference != '\0') {
+        if (*string_reference == delimiter) {
+            token[tokens_index] = '\0';
+            tokens[token_index++] = strdup(token);
+            tokens_index = 0;
         } else {
-            token[j++] = *ptr;
+            token[tokens_index++] = *string_reference;
         }
-        ptr++;
+        string_reference++;
     }
-    token[j] = '\0';
-    tokens[i++] = strdup(token);
-    tokens[i] = NULL;
+    token[tokens_index] = '\0';
+    tokens[token_index++] = strdup(token);
+    tokens[token_index] = NULL;
     free(token);
     return tokens;
 }
