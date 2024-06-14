@@ -1,16 +1,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <errno.h>
 
 char** SplitString(const char* input_string, char delimiter) {
     int count = 0;
     const char* string_reference = input_string;
     while (*string_reference != '\0') {
-        if (*string_reference++ == delimiter) {
+        if (*string_reference == delimiter) {
             count++;
         }
+        string_reference++;
     }
+
     char** tokens = (char**)malloc(sizeof(char*) * (count + 2));
     int token_index = 0;
     string_reference = input_string;
@@ -26,9 +27,10 @@ char** SplitString(const char* input_string, char delimiter) {
         }
         string_reference++;
     }
+    // Add the last token
     token[tokens_index] = '\0';
-    tokens[token_index++] = strdup(token);
-    tokens[token_index] = NULL;
+    tokens[token_index] = strdup(token);
+    tokens[token_index + 1] = NULL;
     free(token);
     return tokens;
 }
