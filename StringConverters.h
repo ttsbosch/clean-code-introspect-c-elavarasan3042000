@@ -1,10 +1,5 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <errno.h>
-
 int TryConverttoInt(const char* input_string, int* value) {
-    char* endptr;
+     char* endptr;
     *value = strtol(input_string, &endptr, 10);
     if (endptr == input_string) {
         return 0;
