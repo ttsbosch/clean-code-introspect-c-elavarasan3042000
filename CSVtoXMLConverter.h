@@ -2,25 +2,29 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
-#include <Converters.h>
-#include <StringProcessor.h>
+#include "TradeRecord.h"
+#include "StringConverters.h"
+
 
 void ConvertFromCSVToXML(FILE* stream) {
     char line[1024];
     TradeRecords Records[1024];
     int lineCount = 0;
     int objectCount = 0;
-    int LotSize = 10;
+    int LotSize = 100;
 
     while (fgets(line, sizeof(line), stream)) {
         char* fields[3];
         int fieldCount = 0;
+        const char* input_string=line;
+        printf("%s\n",line);
         char* token = strtok(line, ",");
+        printf("%s\n",token);
         while (token != NULL) {
+
             fields[fieldCount++] = token;
             token = strtok(NULL, ",");
         }
-
         if (fieldCount != 3) {
             fprintf(stderr, "WARN: Line %d malformed. Only %d field(s) found.\n", lineCount + 1, fieldCount);
             continue;
