@@ -2,7 +2,15 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
-#include <Converters.h>
-#include <StringProcessor.h>
-#include <CSVtoXMLConverter.h>
+#include "CSVtoXMLConverter.h"
 
+int main() {
+    FILE* file = fopen("input.csv", "r");
+    if (file == NULL) {
+        fprintf(stderr, "ERROR: Could not open file.\n");
+        return 1;
+    }
+    ConvertFromCSVToXML(file);
+    fclose(file);
+    return 0;
+}
