@@ -10,16 +10,14 @@ void ConvertFromCSVToXML(FILE* stream) {
     char line[1024];
     TradeRecords Records[1024];
     int lineCount = 0;
-    int objectCount = 0;
+    int recordCount = 0;
     int LotSize = 100;
 
     while (fgets(line, sizeof(line), stream)) {
         char* fields[3];
         int fieldCount = 0;
         const char* input_string=line;
-        printf("%s\n",line);
         char* token = strtok(line, ",");
-        printf("%s\n",token);
         while (token != NULL) {
 
             fields[fieldCount++] = token;
@@ -47,25 +45,27 @@ void ConvertFromCSVToXML(FILE* stream) {
             continue;
         }
 
-        strncpy(Records[objectCount].SourceCurrency, fields[0], 3);
-        strncpy(Records[objectCount].DestinationCurrency, fields[0] + 3, 3);
-        Records[objectCount].Lots = (int)(trade_amount / LotSize);
-        Records[objectCount].Price = trade_price;
-        objectCount++;
+        strncpy(Records[recordCount].SourceCurrency, fields[0], 3);
+        strncpy(Records[recordCount].DestinationCurrency, fields[0] + 3, 3);
+        Records[recordCount].Lots = (int)(trade_amount / LotSize);
+        Records[recordCount].Price = trade_price;
+        recordCount++;
         lineCount++;
     }
-
+    WriteXML(Records, recordCount);
+    printf("INFO: %d trades processed\n", recordCount);
+}
+void WriteXML(TradeRecords *records, int recordCount) {
     FILE* outFile = fopen("output.xml", "w");
     fprintf(outFile, "<TradeRecords>\n");
-    for (int object_index = 0; object_index < objectCount; object_index++) {
+    for (int i = 0; i < recordCount; i++) {
         fprintf(outFile, "\t<TradeRecord>\n");
-        fprintf(outFile, "\t\t<SourceCurrency>%s</SourceCurrency>\n", Records[object_index].SourceCurrency);
-        fprintf(outFile, "\t\t<DestinationCurrency>%s</DestinationCurrency>\n", Records[object_index].DestinationCurrency);
-        fprintf(outFile, "\t\t<Lots>%d</Lots>\n", Records[object_index].Lots);
-        fprintf(outFile, "\t\t<Price>%f</Price>\n", Records[object_index].Price);
+        fprintf(outFile, "\t\t<SourceCurrency>%s</SourceCurrency>\n", records[i].SourceCurrency);
+        fprintf(outFile, "\t\t<DestinationCurrency>%s</DestinationCurrency>\n", records[i].DestinationCurrency);
+        fprintf(outFile, "\t\t<Lots>%d</Lots>\n", records[i].Lots);
+        fprintf(outFile, "\t\t<Price>%f</Price>\n", records[i].Price);
         fprintf(outFile, "\t</TradeRecord>\n");
     }
     fprintf(outFile, "</TradeRecords>");
     fclose(outFile);
-    printf("INFO: %d trades processed\n", objectCount);
 }
