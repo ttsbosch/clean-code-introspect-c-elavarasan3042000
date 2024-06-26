@@ -2,9 +2,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-char** SplitString(const char* input_string, char delimiter) {
+int CountDelimiters(const char* input_string, char delimiter) {
     int count = 0;
     const char* string_reference = input_string;
+
     while (*string_reference != '\0') {
         if (*string_reference == delimiter) {
             count++;
@@ -12,6 +13,11 @@ char** SplitString(const char* input_string, char delimiter) {
         string_reference++;
     }
 
+    return count;
+}
+char** SplitString(const char* input_string, char delimiter) {
+    int count = CountDelimiters(input_string, delimiter) + 1;
+    
     char** tokens = (char**)malloc(sizeof(char*) * (count + 2));
     int token_index = 0;
     string_reference = input_string;
