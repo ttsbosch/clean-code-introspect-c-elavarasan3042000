@@ -62,7 +62,7 @@ void WriteXML(TradeRecords *records, int recordCount) {
         fprintf(outFile, "\t<TradeRecord>\n");
         fprintf(outFile, "\t\t<SourceCurrency>%s</SourceCurrency>\n", records[i].SourceCurrency);
         fprintf(outFile, "\t\t<DestinationCurrency>%s</DestinationCurrency>\n", records[i].DestinationCurrency);
-        fprintf(outFile, "\t\t<Lots>%d</Lots>\n", records[i].Lots);
+        fprintf(outFile, "\t\t<Lots>%f</Lots>\n", records[i].Lots);
         fprintf(outFile, "\t\t<Price>%f</Price>\n", records[i].Price);
         fprintf(outFile, "\t</TradeRecord>\n");
     }
