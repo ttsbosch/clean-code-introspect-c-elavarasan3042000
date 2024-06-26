@@ -15,21 +15,45 @@ void ParseCSVLine(char* line, char* fields[], int* fieldCount) {
         token = strtok(NULL, ",");
     }
 }
+bool ValidateTradeCurrencies(const char* currency, int lineCount) {
+    if (strlen(currency) != 6) {
+        fprintf(stderr, "WARN: Trade currencies on line %d malformed: '%s'\n", lineCount + 1, currency);
+        return false;
+    }
+    return true;
+}
+
+bool ValidateTradeAmount(const char* amountStr, int lineCount, int& amount) {
+    if (!TryConverttoInt(amountStr, &amount)) {
+        fprintf(stderr, "WARN: Trade amount on line %d not a valid integer: '%s'\n", lineCount + 1, amountStr);
+        return false;
+    }
+    return true;
+}
+
+bool ValidateTradePrice(const char* priceStr, int lineCount, double& price) {
+    if (!TryConverttoDouble(priceStr, &price)) {
+        fprintf(stderr, "WARN: Trade price on line %d not a valid decimal: '%s'\n", lineCount + 1, priceStr);
+        return false;
+    }
+    return true;
+}
+
 bool ValidateTradeInfo(char* fields[], int lineCount) {
-    if (strlen(fields[0]) != 6) {
-        fprintf(stderr, "WARN: Trade currencies on line %d malformed: '%s'\n", lineCount + 1, fields[0]);
+    // Validate trade currencies
+    if (!ValidateTradeCurrencies(fields[0], lineCount)) {
         return false;
     }
 
+    // Validate trade amount
     int trade_amount;
-    if (!TryConverttoInt(fields[1], &trade_amount)) {
-        fprintf(stderr, "WARN: Trade amount on line %d not a valid integer: '%s'\n", lineCount + 1, fields[1]);
+    if (!ValidateTradeAmount(fields[1], lineCount, trade_amount)) {
         return false;
     }
 
+    // Validate trade price
     double trade_price;
-    if (!TryConverttoDouble(fields[2], &trade_price)) {
-        fprintf(stderr, "WARN: Trade price on line %d not a valid decimal: '%s'\n", lineCount + 1, fields[2]);
+    if (!ValidateTradePrice(fields[2], lineCount, trade_price)) {
         return false;
     }
 
