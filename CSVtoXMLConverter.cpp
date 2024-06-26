@@ -5,7 +5,7 @@
 #include "CSVtoXMLConverter.h"
 
 int main() {
-    FILE* file = fopen("trades.txt", "r");
+    FILE* file = fopen("../trades.txt", "r");
     if (file == NULL) {
         fprintf(stderr, "ERROR: Could not open file.\n");
         return 1;
