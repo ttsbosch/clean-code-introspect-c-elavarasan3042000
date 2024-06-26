@@ -5,7 +5,7 @@
 #include "TradeRecord.h"
 #include "StringConverters.h"
 
-
+void WriteXML(TradeRecords *records, int recordCount);
 void ConvertFromCSVToXML(FILE* stream) {
     char line[1024];
     TradeRecords Records[1024];
