@@ -6,55 +6,46 @@
 #include "StringConverters.h"
 
 void WriteXML(TradeRecords *records, int recordCount);
-void ConvertFromCSVToXML(FILE* stream) {
-    char line[1024];
-    TradeRecords Records[1024];
-    int lineCount = 0;
-    int recordCount = 0;
-    int LotSize = 100;
-
-    while (fgets(line, sizeof(line), stream)) {
-        char* fields[3];
-        int fieldCount = 0;
-        const char* input_string=line;
-        char* token = strtok(line, ",");
-        while (token != NULL) {
-
-            fields[fieldCount++] = token;
-            token = strtok(NULL, ",");
-        }
-        if (fieldCount != 3) {
-            fprintf(stderr, "WARN: Line %d malformed. Only %d field(s) found.\n", lineCount + 1, fieldCount);
-            continue;
-        }
-
-        if (strlen(fields[0]) != 6) {
-            fprintf(stderr, "WARN: Trade currencies on line %d malformed: '%s'\n", lineCount + 1, fields[0]);
-            continue;
-        }
-
-        int trade_amount;
-        if (!TryConverttoInt(fields[1], &trade_amount)) {
-            fprintf(stderr, "WARN: Trade amount on line %d not a valid integer: '%s'\n", lineCount + 1, fields[1]);
-            continue;
-        }
-
-        double trade_price;
-        if (!TryConverttoDouble(fields[2], &trade_price)) {
-            fprintf(stderr, "WARN: Trade price on line %d not a valid decimal: '%s'\n", lineCount + 1, fields[2]);
-            continue;
-        }
-
-        strncpy(Records[recordCount].SourceCurrency, fields[0], 3);
-        strncpy(Records[recordCount].DestinationCurrency, fields[0] + 3, 3);
-        Records[recordCount].Lots = (int)(trade_amount / LotSize);
-        Records[recordCount].Price = trade_price;
-        recordCount++;
-        lineCount++;
+void ParseCSVLine(char* line, char* fields[], int* fieldCount) {
+    *fieldCount = 0;
+    char* token = strtok(line, ",");
+    while (token != NULL && *fieldCount < 3) {
+        fields[*fieldCount] = token;
+        (*fieldCount)++;
+        token = strtok(NULL, ",");
     }
-    WriteXML(Records, recordCount);
-    printf("INFO: %d trades processed\n", recordCount);
 }
+bool ValidateTradeInfo(char* fields[], int lineCount) {
+    if (strlen(fields[0]) != 6) {
+        fprintf(stderr, "WARN: Trade currencies on line %d malformed: '%s'\n", lineCount + 1, fields[0]);
+        return false;
+    }
+
+    int trade_amount;
+    if (!TryConverttoInt(fields[1], &trade_amount)) {
+        fprintf(stderr, "WARN: Trade amount on line %d not a valid integer: '%s'\n", lineCount + 1, fields[1]);
+        return false;
+    }
+
+    double trade_price;
+    if (!TryConverttoDouble(fields[2], &trade_price)) {
+        fprintf(stderr, "WARN: Trade price on line %d not a valid decimal: '%s'\n", lineCount + 1, fields[2]);
+        return false;
+    }
+
+    return true;
+}
+void ProcessValidRecord(TradeRecords Records[], int* recordCount, char* fields[], int LotSize) {
+    strncpy(Records[*recordCount].SourceCurrency, fields[0], 3);
+    strncpy(Records[*recordCount].DestinationCurrency, fields[0] + 3, 3);
+    int trade_amount;
+    TryConverttoInt(fields[1], &trade_amount);  // Assuming TryConverttoInt already validated
+    Records[*recordCount].Lots = (int)(trade_amount / LotSize);
+    TryConverttoDouble(fields[2], &Records[*recordCount].Price);  // Assuming TryConverttoDouble already validated
+    (*recordCount)++;
+}
+
+
 void WriteXML(TradeRecords *records, int recordCount) {
     FILE* outFile = fopen("output.xml", "w");
     fprintf(outFile, "<TradeRecords>\n");
@@ -68,4 +59,35 @@ void WriteXML(TradeRecords *records, int recordCount) {
     }
     fprintf(outFile, "</TradeRecords>");
     fclose(outFile);
+}
+void ConvertFromCSVToXML(FILE* stream) {
+    char line[1024];
+    TradeRecords Records[1024];
+    int lineCount = 0;
+    int recordCount = 0;
+    int LotSize = 100;
+
+    while (fgets(line, sizeof(line), stream)) {
+        char* fields[3];
+        int fieldCount = 0;
+
+        // Parse CSV line into fields
+        ParseCSVLine(line, fields, &fieldCount);
+
+        // Validate trade information
+        if (fieldCount != 3 || !ValidateTradeInfo(fields, lineCount)) {
+            continue;
+        }
+
+        // Process valid record
+        ProcessValidRecord(Records, &recordCount, fields, LotSize);
+
+        lineCount++;
+    }
+
+    // Write records to XML
+    WriteXML(Records, recordCount);
+
+    // Print information about processed trades
+    printf("INFO: %d trades processed\n", recordCount);
 }
