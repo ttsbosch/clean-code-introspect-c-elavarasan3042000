@@ -231,15 +231,3 @@ void CsvtoXMLConverter(FILE* stream) {
     FreeLines(lines, numLines);
     free(records);
 }
- 
-int main() {
-    FILE* csvFile = fopen("../trades.txt", "r");
-    if (!csvFile) {
-        fprintf(stderr, "Could not open trades.txt: %s\n", strerror(errno));
-        return 1;
-    }
- 
-    ConvertDatafromCsvtoXML(csvFile);
-    fclose(csvFile);
-    return 0;
-}
