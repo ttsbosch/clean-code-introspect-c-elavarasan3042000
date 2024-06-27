@@ -109,7 +109,7 @@ int ReadFromCSV(FILE* stream)
 
         lineCount++;
     }
-    return recordCount
+    return recordCount;
 }
 void ConvertFromCSVToXML(FILE* stream) {
     int recordCount = 0;
