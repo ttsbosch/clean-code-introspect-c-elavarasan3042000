@@ -210,7 +210,7 @@ void FreeLines(char** lines, int numLines) {
     free(lines);
 }
  
-void ConvertFromCsvtoXML(FILE* stream) {
+void ConvertFromCSCToXML(FILE* stream) {
     int numLines;
     char** lines = ReadTradeDataFromCsv(stream, &numLines);
     if (!lines) {
