@@ -84,14 +84,12 @@ void WriteXML(TradeRecords *records, int recordCount) {
     fprintf(outFile, "</TradeRecords>");
     fclose(outFile);
 }
-int ReadFromCSV(FILE* stream)
-{
-    char line[1024];
+void ConvertFromCSVToXML(FILE* stream) {
+   char line[1024];
     TradeRecords Records[1024];
     int lineCount = 0;
     int recordCount = 0;
     int LotSize = 100;
-
     while (fgets(line, sizeof(line), stream)) {
         char* fields[3];
         int fieldCount = 0;
@@ -108,12 +106,7 @@ int ReadFromCSV(FILE* stream)
         ProcessValidRecord(Records, &recordCount, fields, LotSize);
 
         lineCount++;
-    }
-    return recordCount;
-}
-void ConvertFromCSVToXML(FILE* stream) {
-    int recordCount = 0;
-    recordCount = ReadFromCSV(stream);
+    } 
     // Write records to XML
     WriteXML(Records, recordCount);
 
