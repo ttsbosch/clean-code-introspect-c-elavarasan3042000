@@ -47,13 +47,13 @@ bool ValidateTradeInfo(char* fields[], int lineCount) {
 
     // Validate trade amount
     int trade_amount;
-    if (!ValidateTradeAmount(fields[1], lineCount, trade_amount)) {
-        return false;
-    }
+    // if (!ValidateTradeAmount(fields[1], lineCount, trade_amount)) {
+    //     return false;
+    // }
 
     // Validate trade price
     double trade_price;
-    if (!ValidateTradePrice(fields[2], lineCount, trade_price)) {
+    if ((!ValidateTradePrice(fields[2], lineCount, trade_price))||(!ValidateTradeAmount(fields[1], lineCount, trade_amount))) {
         return false;
     }
 
