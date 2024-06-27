@@ -4,10 +4,6 @@
 #include <string>
 #include <fstream>
 #include "CSVtoXMLConverter.h"
-// Include the C code implementation headers (assuming in a header file or directly)
-extern "C" {
-
-}
 
 // Fixture for setting up and cleaning up test environment
 class ConvertDataTestFixture : public ::testing::Test {
