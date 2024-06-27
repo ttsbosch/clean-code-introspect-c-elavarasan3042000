@@ -113,7 +113,7 @@ int ReadFromCSV(FILE* stream)
 }
 void ConvertFromCSVToXML(FILE* stream) {
     int recordCount = 0;
-    recordCount = ReadFromCSV(FILE* stream)
+    recordCount = ReadFromCSV(stream)
     // Write records to XML
     WriteXML(Records, recordCount);
 
