@@ -2,19 +2,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
- 
+#include "TradeRecord.h" 
 #define MAX_TRADE_RECORDS 1024
 #define MAX_LINE_LENGTH 1024
 #define INITIAL_CAPACITY 10
 #define MAX_CURRENCY_LENGTH 3
- 
-typedef struct {
-    char Source_Currency[MAX_CURRENCY_LENGTH + 1];
-    char Destination_Currency[MAX_CURRENCY_LENGTH + 1];
-    int tradeAmount;
-    double tradePrice;
-} Trade_Record;
- 
+
 void HandleMemoryAllocationFailure() {
     fprintf(stderr, "Memory allocation failed.\n");
 }
